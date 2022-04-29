@@ -1,15 +1,15 @@
-import './taskList.css'
+import "./taskList.css";
 
 import Task from "../Task";
 
-const TaskList = () => {
-  return (
-    <ul className="todo-list">
-      <Task taskStatus="completed" label="Completed task" />
-      <Task taskStatus="editing" label="Editing task" edit={true} />
-      <Task label="Active task" />
-    </ul>
-  );
+const TaskList = ({ todos, onDeleted }) => {
+  const elements = todos.map((item) => {
+    const { id, ...itemProps } = item;
+
+    return <Task key={id} {...itemProps} onDeleted={() => onDeleted(id)} />;
+  });
+
+  return <ul className="todo-list">{elements}</ul>;
 };
 
 export default TaskList;

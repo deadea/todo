@@ -4,7 +4,7 @@ const NewTaskForm = () => {
   return (
     <input
       className="new-todo"
-      placeHolder="What needs to be done?"
+      placeholder="What needs to be done?"
       autoFocus
     ></input>
   );
