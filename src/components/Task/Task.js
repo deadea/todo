@@ -4,6 +4,7 @@ import { formatDistanceToNow } from "date-fns";
 import React from "react";
 
 export default class Task extends React.Component {
+  /*
   state = {
     done: false,
   };
@@ -15,15 +16,18 @@ export default class Task extends React.Component {
       };
     });
   };
-
+*/
   render() {
-    const { label, onDeleted } = this.props;
+    const { label, onDeleted, onToggleDone, done } = this.props;
 
-    const { done } = this.state;
-    let isCompleted;
+    /*
+    const { done } = this.state; */
+    let isCompleted = "";
+    let isChecked = "";
     if (done) {
       isCompleted = "completed";
-    } else isCompleted = "";
+      isChecked = "checked";
+    }
 
     const created = formatDistanceToNow(new Date());
 
@@ -33,7 +37,10 @@ export default class Task extends React.Component {
           <input
             className="toggle"
             type="checkbox"
-            onClick={this.onClickCheckbox}
+            /*
+            onClick={this.onClickCheckbox}*/
+            onClick={onToggleDone}
+            defaultChecked={isChecked}
           ></input>
           <label>
             <span className="description">{label}</span>
