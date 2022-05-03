@@ -2,7 +2,6 @@ import React from "react";
 import NewTaskForm from "../NewTaskForm";
 import TaskList from "../TaskList";
 import Footer from "../Footer";
-
 import "./App.css";
 
 export default class App extends React.Component {
@@ -10,48 +9,28 @@ export default class App extends React.Component {
 
   state = {
     todoData: [
-      this.createTodoTask("Completed task"),
-      this.createTodoTask("Editing task"),
-      this.createTodoTask("Active task"),
-      /*
-      { label: "Completed task", id: 1 },
-      { label: "Editing task", id: 2 },
-      { label: "Active task", id: 3 },*/
+      this.createTodoTask("Task to do"),
+      this.createTodoTask("Task to do"),
+      this.createTodoTask("Task to do"),
     ],
-    filter: 'All' //completed all active
+    filter: "All",
   };
 
-
-filterTasks(tasks, filter) {
-  if (filter === "All") {
-    return tasks
-  }
-  if (filter === "Active" ) {
-    return tasks.filter((task) => !task.done)
-  }
-  if (filter === "Completed" ) {
-    return tasks.filter((task) => task.done)
-  }
-  //возможно дефолтно оставить ifelse return tasks
-}
-
-changeFilter = (filter) => {
-  this.setState({
-    filter
-  })
-}
-
-//добавление функции которая умеет создавать элемент таску, вызов в state
   createTodoTask(label) {
     return {
       label,
       done: false,
+      edit: false,
       id: this.maxId++,
+      date: new Date(),
     };
   }
 
   addItem = (text) => {
-    //добавление элемента
+    if (text.trim() === "") {
+      return alert("Please enter task name");
+    }
+
     const newItem = this.createTodoTask(text);
 
     this.setState(({ todoData }) => {
@@ -75,23 +54,21 @@ changeFilter = (filter) => {
     });
   };
 
-deleteCompleted = (arr) => {
-  const tasksToDelete = arr.filter((el) => el.done)
-  tasksToDelete.forEach((el) => {
-  this.deleteTask(el.id)
-  })
-}
+  deleteCompleted = (arr) => {
+    const tasksToDelete = arr.filter((el) => el.done);
+    tasksToDelete.forEach((el) => {
+      this.deleteTask(el.id);
+    });
+  };
 
-//реализация изменения done в state
   onToggleDone = (id) => {
     this.setState(({ todoData }) => {
       const idx = todoData.findIndex((el) => el.id === id);
-      //1 не меняя исходный создать новый объект с новым знач done
+
       const oldItem = todoData[idx];
       const newItem = { ...oldItem, done: !oldItem.done };
 
-      //2 создать новый массив стейта
-     const newArr = [
+      const newArr = [
         ...todoData.slice(0, idx),
         newItem,
         ...todoData.slice(idx + 1),
@@ -102,11 +79,45 @@ deleteCompleted = (arr) => {
     });
   };
 
+  onEdit = (id) => {
+    this.setState(({ todoData }) => {
+      const idx = todoData.findIndex((el) => el.id === id);
+
+      const oldItem = todoData[idx];
+      const newItem = { ...oldItem, edit: !oldItem.edit };
+
+      const newArr = [
+        ...todoData.slice(0, idx),
+        newItem,
+        ...todoData.slice(idx + 1),
+      ];
+
+      return {
+        todoData: newArr,
+      };
+    });
+  };
+
+  filterTasks(tasks, filter) {
+    if (filter === "Active") {
+      return tasks.filter((task) => !task.done);
+    } else if (filter === "Completed") {
+      return tasks.filter((task) => task.done);
+    } else {
+      return tasks;
+    }
+  }
+
+  changeFilter = (filter) => {
+    this.setState({
+      filter,
+    });
+  };
+
   render() {
-    const {todoData, filter} = this.state;
+    const { todoData, filter } = this.state;
 
-    const tasksToShow = this.filterTasks(todoData, filter)
-
+    const tasksToShow = this.filterTasks(todoData, filter);
 
     const doneCount = todoData.filter((el) => el.done).length;
     const todoCount = todoData.length - doneCount;
@@ -115,17 +126,22 @@ deleteCompleted = (arr) => {
       <section className="todoapp">
         <header className="header">
           <h1>todos</h1>
-          <NewTaskForm 
-          onTaskAdded={this.addItem}
-          />
+          <NewTaskForm onTaskAdded={this.addItem} />
         </header>
         <section className="main">
           <TaskList
             todos={tasksToShow}
             onDeleted={this.deleteTask}
             onToggleDone={this.onToggleDone}
+            onEdit={this.onEdit}
           />
-          <Footer toDo={todoCount} todoData={todoData} onFilter={this.changeFilter} filter={filter} deleteCompleted={this.deleteCompleted} />
+          <Footer
+            toDo={todoCount}
+            todoData={todoData}
+            onFilter={this.changeFilter}
+            filter={filter}
+            deleteCompleted={this.deleteCompleted}
+          />
         </section>
       </section>
     );
