@@ -1,6 +1,7 @@
-import PropTypes from "prop-types";
-import Task from "../Task";
-import "./taskList.css";
+import PropTypes from 'prop-types';
+
+import Task from '../Task';
+import './taskList.css';
 
 const TaskList = ({ todos, onDeleted, onToggleDone, onEdit }) => {
   const elements = todos.map((item) => {

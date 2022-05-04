@@ -1,10 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
-import "./newTaskForm.css";
+import React from 'react';
+import PropTypes from 'prop-types';
+import './newTaskForm.css';
 
 export default class NewTaskForm extends React.Component {
   state = {
-    label: "",
+    label: '',
   };
 
   static defaultProps = {
@@ -24,7 +24,7 @@ export default class NewTaskForm extends React.Component {
     e.preventDefault();
     this.props.onTaskAdded(this.state.label);
     this.setState({
-      label: "",
+      label: '',
     });
   };
 

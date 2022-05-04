@@ -1,16 +1,14 @@
-import PropTypes from "prop-types";
-import TasksFilter from "../TasksFilter";
-import "./footer.css";
+import PropTypes from 'prop-types';
+
+import TasksFilter from '../TasksFilter';
+import './footer.css';
 
 const Footer = ({ toDo, onFilter, filter, deleteCompleted, todoData }) => {
   return (
     <footer className="footer">
       <span className="todo-count">{toDo} items left</span>
       <TasksFilter onFilter={onFilter} filter={filter} />
-      <button
-        className="clear-completed"
-        onClick={() => deleteCompleted(todoData)}
-      >
+      <button className="clear-completed" onClick={() => deleteCompleted(todoData)}>
         Clear completed
       </button>
     </footer>
@@ -20,7 +18,7 @@ const Footer = ({ toDo, onFilter, filter, deleteCompleted, todoData }) => {
 Footer.defaultProps = {
   toDo: 0,
   onFilter: () => {},
-  filter: "All",
+  filter: 'All',
   deleteCompleted: () => {},
   todoData: [{}],
 };

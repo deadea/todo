@@ -1,19 +1,16 @@
-import React from "react";
-import NewTaskForm from "../NewTaskForm";
-import TaskList from "../TaskList";
-import Footer from "../Footer";
-import "./App.css";
+import React from 'react';
+
+import NewTaskForm from '../NewTaskForm';
+import TaskList from '../TaskList';
+import Footer from '../Footer';
+import './App.css';
 
 export default class App extends React.Component {
   maxId = 100;
 
   state = {
-    todoData: [
-      this.createTodoTask("Task to do"),
-      this.createTodoTask("Task to do"),
-      this.createTodoTask("Task to do"),
-    ],
-    filter: "All",
+    todoData: [this.createTodoTask('Task to do'), this.createTodoTask('Task to do'), this.createTodoTask('Task to do')],
+    filter: 'All',
   };
 
   createTodoTask(label) {
@@ -27,8 +24,8 @@ export default class App extends React.Component {
   }
 
   addItem = (text) => {
-    if (text.trim() === "") {
-      return alert("Please enter task name");
+    if (text.trim() === '') {
+      return alert('Please enter task name');
     }
 
     const newItem = this.createTodoTask(text);
@@ -68,11 +65,7 @@ export default class App extends React.Component {
       const oldItem = todoData[idx];
       const newItem = { ...oldItem, done: !oldItem.done };
 
-      const newArr = [
-        ...todoData.slice(0, idx),
-        newItem,
-        ...todoData.slice(idx + 1),
-      ];
+      const newArr = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
       return {
         todoData: newArr,
       };
@@ -86,11 +79,7 @@ export default class App extends React.Component {
       const oldItem = todoData[idx];
       const newItem = { ...oldItem, edit: !oldItem.edit };
 
-      const newArr = [
-        ...todoData.slice(0, idx),
-        newItem,
-        ...todoData.slice(idx + 1),
-      ];
+      const newArr = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
 
       return {
         todoData: newArr,
@@ -99,9 +88,9 @@ export default class App extends React.Component {
   };
 
   filterTasks(tasks, filter) {
-    if (filter === "Active") {
+    if (filter === 'Active') {
       return tasks.filter((task) => !task.done);
-    } else if (filter === "Completed") {
+    } else if (filter === 'Completed') {
       return tasks.filter((task) => task.done);
     } else {
       return tasks;

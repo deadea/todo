@@ -1,7 +1,7 @@
-import React from "react";
-import { formatDistanceToNow } from "date-fns";
-import PropTypes from "prop-types";
-import "./task.css";
+import React from 'react';
+import { formatDistanceToNow } from 'date-fns';
+import PropTypes from 'prop-types';
+import './task.css';
 
 export default class Task extends React.Component {
   state = {
@@ -46,41 +46,29 @@ export default class Task extends React.Component {
   render() {
     const { onDeleted, onToggleDone, onEdit, done, edit, date } = this.props;
 
-    let taskStatus = "";
-    let isChecked = "";
+    let taskStatus = '';
+    let isChecked = '';
     if (done) {
-      taskStatus = "completed";
-      isChecked = "checked";
+      taskStatus = 'completed';
+      isChecked = 'checked';
     }
     if (edit) {
-      taskStatus = "editing";
+      taskStatus = 'editing';
     }
 
     return (
       <li className={taskStatus}>
         <div className="view">
-          <input
-            className="toggle"
-            type="checkbox"
-            onClick={onToggleDone}
-            defaultChecked={isChecked}
-          ></input>
+          <input className="toggle" type="checkbox" onClick={onToggleDone} defaultChecked={isChecked}></input>
           <label>
             <span className="description">{this.state.text}</span>
-            <span className="created">
-              created {formatDistanceToNow(date, { includeSeconds: true })} ago
-            </span>
+            <span className="created">created {formatDistanceToNow(date, { includeSeconds: true })} ago</span>
           </label>
           <button className="icon icon-edit" onClick={onEdit}></button>
           <button className="icon icon-destroy" onClick={onDeleted}></button>
         </div>
         <form onSubmit={this.onSubmit}>
-          <input
-            type="text"
-            className="edit"
-            defaultValue={this.state.text}
-            onChange={this.onLabelChange}
-          ></input>
+          <input type="text" className="edit" defaultValue={this.state.text} onChange={this.onLabelChange}></input>
         </form>
       </li>
     );
