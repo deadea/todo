@@ -1,4 +1,5 @@
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import NewTaskForm from '../NewTaskForm';
 import TaskList from '../TaskList';
@@ -6,33 +7,31 @@ import Footer from '../Footer';
 import './App.css';
 
 export default class App extends React.Component {
-  maxId = 100;
-
   state = {
-    todoData: [this.createTodoTask('Task to do'), this.createTodoTask('Task to do'), this.createTodoTask('Task to do')],
+    todoData: JSON.parse(localStorage.getItem('todoData')) || [],
     filter: 'All',
   };
 
   createTodoTask(label) {
     return {
-      label,
+      label: label,
       done: false,
       edit: false,
-      id: this.maxId++,
+      id: uuidv4(),
       date: new Date(),
+      checked: false,
     };
   }
 
   addItem = (text) => {
     if (text.trim() === '') {
-      return alert('Please enter task name');
+      return;
     }
 
     const newItem = this.createTodoTask(text);
 
     this.setState(({ todoData }) => {
       const newArr = [...todoData, newItem];
-
       return {
         todoData: newArr,
       };
@@ -63,7 +62,7 @@ export default class App extends React.Component {
       const idx = todoData.findIndex((el) => el.id === id);
 
       const oldItem = todoData[idx];
-      const newItem = { ...oldItem, done: !oldItem.done };
+      const newItem = { ...oldItem, done: !oldItem.done, checked: !oldItem.checked };
 
       const newArr = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
       return {
@@ -80,7 +79,20 @@ export default class App extends React.Component {
       const newItem = { ...oldItem, edit: !oldItem.edit };
 
       const newArr = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
+      return {
+        todoData: newArr,
+      };
+    });
+  };
 
+  editTask = (id, text) => {
+    this.setState(({ todoData }) => {
+      const idx = todoData.findIndex((el) => el.id === id);
+
+      const oldItem = todoData[idx];
+      const newItem = { ...oldItem, label: text, edit: !oldItem.edit };
+
+      const newArr = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
       return {
         todoData: newArr,
       };
@@ -105,6 +117,7 @@ export default class App extends React.Component {
 
   render() {
     const { todoData, filter } = this.state;
+    localStorage.setItem('todoData', JSON.stringify(todoData));
 
     const tasksToShow = this.filterTasks(todoData, filter);
 
@@ -123,6 +136,7 @@ export default class App extends React.Component {
             onDeleted={this.deleteTask}
             onToggleDone={this.onToggleDone}
             onEdit={this.onEdit}
+            editTask={this.editTask}
           />
           <Footer
             toDo={todoCount}

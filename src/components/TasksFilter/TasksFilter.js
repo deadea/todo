@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import { ACTIONS } from './filter-actions';
 import './tasksFilter.css';
 
 export default class TasksFilter extends React.Component {
-  buttons = [{ label: 'All' }, { label: 'Active' }, { label: 'Completed' }];
   static defaultProps = {
     onFilter: () => {},
     filter: 'All',
@@ -12,11 +13,19 @@ export default class TasksFilter extends React.Component {
     onFilter: PropTypes.func,
     filter: PropTypes.string,
   };
-
+  getActions() {
+    let actionsCopy = {};
+    actionsCopy = Object.assign(actionsCopy, ACTIONS);
+    const actions = [];
+    for (let key in actionsCopy) {
+      actions.push({ label: actionsCopy[key] });
+    }
+    return actions;
+  }
   render() {
     const { onFilter, filter } = this.props;
 
-    const buttons = this.buttons.map(({ label }) => {
+    const buttons = this.getActions().map(({ label }) => {
       let isSelected = '';
       if (filter === label) {
         isSelected = 'selected';

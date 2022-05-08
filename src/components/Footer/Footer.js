@@ -4,6 +4,10 @@ import TasksFilter from '../TasksFilter';
 import './footer.css';
 
 const Footer = ({ toDo, onFilter, filter, deleteCompleted, todoData }) => {
+  if (toDo === 0) {
+    toDo = 'No';
+  }
+
   return (
     <footer className="footer">
       <span className="todo-count">{toDo} items left</span>
@@ -24,7 +28,7 @@ Footer.defaultProps = {
 };
 
 Footer.propTypes = {
-  toDo: PropTypes.number,
+  toDo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onFilter: PropTypes.func,
   filter: PropTypes.string,
   deleteCompleted: PropTypes.func,
