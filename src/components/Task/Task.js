@@ -2,6 +2,8 @@ import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+
+import Timer from '../Timer';
 import './task.css';
 
 export default class Task extends React.Component {
@@ -43,7 +45,8 @@ export default class Task extends React.Component {
   };
 
   render() {
-    const { onDeleted, onToggleDone, onEdit, done, edit, date, checked, label } = this.props;
+    const { onDeleted, onToggleDone, onEdit, done, edit, date, checked, label, changeTodoTime, todoTime, id } =
+      this.props;
     const dateFormat = new Date(date);
     let taskStatus = classNames({ completed: done === true }, { editing: edit === true });
 
@@ -52,9 +55,10 @@ export default class Task extends React.Component {
         <div className="view">
           <input className="toggle" type="checkbox" onChange={onToggleDone} checked={checked}></input>
           <label>
-            <span className="description" onClick={onToggleDone}>
+            <span className="title" onClick={onToggleDone}>
               {label}
             </span>
+            <Timer changeTodoTime={changeTodoTime} todoTime={todoTime} id={id} />
             <span className="created">created {formatDistanceToNow(dateFormat, { includeSeconds: true })} ago</span>
           </label>
           <button className="icon icon-edit" onClick={onEdit}></button>

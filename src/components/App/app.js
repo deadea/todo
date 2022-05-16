@@ -20,6 +20,7 @@ export default class App extends React.Component {
       id: uuidv4(),
       date: new Date(),
       checked: false,
+      todoTime: 0,
     };
   }
 
@@ -115,6 +116,20 @@ export default class App extends React.Component {
     });
   };
 
+  changeTodoTime = (id, time) => {
+    this.setState(({ todoData }) => {
+      const idx = todoData.findIndex((el) => el.id === id);
+
+      const oldItem = todoData[idx];
+      const newItem = { ...oldItem, todoTime: time };
+
+      const newArr = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
+      return {
+        todoData: newArr,
+      };
+    });
+  };
+
   render() {
     const { todoData, filter } = this.state;
     localStorage.setItem('todoData', JSON.stringify(todoData));
@@ -137,6 +152,7 @@ export default class App extends React.Component {
             onToggleDone={this.onToggleDone}
             onEdit={this.onEdit}
             editTask={this.editTask}
+            changeTodoTime={this.changeTodoTime}
           />
           <Footer
             toDo={todoCount}
