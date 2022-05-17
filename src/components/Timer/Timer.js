@@ -3,8 +3,9 @@ import './timer.css';
 
 class Timer extends React.Component {
   state = {
-    time: parseInt(this.props.todoTime) || 0,
     timerOn: false,
+    min: parseInt(this.props.minutes),
+    sec: parseInt(this.props.seconds),
   };
   componentDidMount() {
     this.interval = null;
@@ -13,15 +14,29 @@ class Timer extends React.Component {
   componentWillUnmount() {
     clearInterval(this.interval);
   }
+
   timerTick = () => {
-    this.setState(({ time }) => {
-      return {
-        time: time + 1000,
-      };
-    });
+    if (this.state.min === 0 && this.state.sec === 0) {
+      clearInterval(this.interval);
+      return;
+    }
+    if (this.state.sec !== 0) {
+      this.setState(({ sec }) => {
+        return {
+          sec: sec - 1,
+        };
+      });
+    } else {
+      this.setState(({ min }) => {
+        return {
+          sec: 59,
+          min: min - 1,
+        };
+      });
+    }
   };
 
-  timerStart = (e) => {
+  timerStart = () => {
     if (!this.state.timerOn) {
       this.setState({
         timerOn: true,
@@ -34,18 +49,19 @@ class Timer extends React.Component {
     if (this.state.timerOn) {
       this.setState({ timerOn: false });
       clearInterval(this.interval);
-      this.props.changeTodoTime(this.props.id, this.state.time);
+      this.props.changeTodoTime(this.props.id, this.state.min, this.state.sec);
     } else return;
   };
 
   render() {
-    const { time } = this.state;
-
+    const { min, sec } = this.state;
+    const minFormatted = min.toString().length === 1 ? `0${min}` : min;
+    const secFormatted = sec.toString().length === 1 ? `0${sec}` : sec;
     return (
       <span className="description">
         <button className="icon icon-play" onMouseDown={this.timerStart}></button>
         <button className="icon icon-pause" onClick={this.timerPause}></button>
-        {('0' + Math.floor((time / 60000) % 60)).slice(-2)}:{('0' + Math.floor((time / 1000) % 60)).slice(-2)}
+        {minFormatted}:{secFormatted}
       </span>
     );
   }

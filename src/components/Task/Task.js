@@ -45,7 +45,7 @@ export default class Task extends React.Component {
   };
 
   render() {
-    const { onDeleted, onToggleDone, onEdit, done, edit, date, checked, label, changeTodoTime, todoTime, id } =
+    const { onDeleted, onToggleDone, onEdit, done, edit, date, checked, label, minutes, seconds, id, changeTodoTime } =
       this.props;
     const dateFormat = new Date(date);
     let taskStatus = classNames({ completed: done === true }, { editing: edit === true });
@@ -58,7 +58,7 @@ export default class Task extends React.Component {
             <span className="title" onClick={onToggleDone}>
               {label}
             </span>
-            <Timer changeTodoTime={changeTodoTime} todoTime={todoTime} id={id} />
+            <Timer id={id} minutes={minutes} seconds={seconds} changeTodoTime={changeTodoTime} />
             <span className="created">created {formatDistanceToNow(dateFormat, { includeSeconds: true })} ago</span>
           </label>
           <button className="icon icon-edit" onClick={onEdit}></button>

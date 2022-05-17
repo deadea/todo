@@ -5,6 +5,9 @@ import './newTaskForm.css';
 export default class NewTaskForm extends React.Component {
   state = {
     label: '',
+    min: '',
+    sec: '',
+    error: false,
   };
 
   static defaultProps = {
@@ -15,29 +18,82 @@ export default class NewTaskForm extends React.Component {
     onTaskAdded: PropTypes.func,
   };
 
-  onLabelChange = (e) => {
+  onChange = (e) => {
     this.setState({
-      label: e.target.value,
+      error: false,
     });
+
+    if (e.target.name === 'text') {
+      this.setState({
+        label: e.target.value,
+      });
+    }
+    if (e.target.name === 'min') {
+      if (parseInt(e.target.value) > 59) {
+        this.setState({
+          min: e.target.value,
+          error: true,
+        });
+      }
+      this.setState({
+        min: e.target.value,
+      });
+    }
+    if (e.target.name === 'sec') {
+      if (parseInt(e.target.value) > 59) {
+        this.setState({
+          sec: e.target.value,
+          error: true,
+        });
+      } else {
+        this.setState({
+          sec: e.target.value,
+        });
+      }
+    }
   };
-  onSubmit = (e) => {
-    e.preventDefault();
-    this.props.onTaskAdded(this.state.label);
-    this.setState({
-      label: '',
-    });
+
+  onKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      this.props.onTaskAdded(this.state.label, this.state.min, this.state.sec);
+      this.setState({
+        label: '',
+        min: '',
+        sec: '',
+        error: false,
+      });
+    }
   };
 
   render() {
+    const errorNum = this.state.error ? <span className="errorMessage">Please enter correct time value</span> : null;
     return (
-      <form onSubmit={this.onSubmit}>
+      <form className="new-todo-form" onKeyDown={this.onKeyDown}>
+        {errorNum}
         <input
           type="text"
+          name="text"
           className="new-todo"
           placeholder="What needs to be done?"
-          autoFocus
-          onChange={this.onLabelChange}
+          onChange={this.onChange}
           value={this.state.label}
+          autoComplete="off"
+        ></input>
+        <input
+          type="number"
+          name="min"
+          className="new-todo-form__timer"
+          placeholder="Min"
+          onChange={this.onChange}
+          value={this.state.min}
+        ></input>
+        <input
+          type="number"
+          name="sec"
+          className="new-todo-form__timer"
+          placeholder="Sec"
+          onChange={this.onChange}
+          value={this.state.sec}
         ></input>
       </form>
     );

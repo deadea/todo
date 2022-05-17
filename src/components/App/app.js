@@ -12,7 +12,7 @@ export default class App extends React.Component {
     filter: 'All',
   };
 
-  createTodoTask(label) {
+  createTodoTask(label, min, sec) {
     return {
       label: label,
       done: false,
@@ -20,16 +20,20 @@ export default class App extends React.Component {
       id: uuidv4(),
       date: new Date(),
       checked: false,
-      todoTime: 0,
+      minutes: min || 0,
+      seconds: sec || 0,
     };
   }
 
-  addItem = (text) => {
+  addItem = (text, min, sec) => {
     if (text.trim() === '') {
       return;
     }
+    if (parseInt(sec) > 59 || parseInt(min) > 59) {
+      return;
+    }
 
-    const newItem = this.createTodoTask(text);
+    const newItem = this.createTodoTask(text, min, sec);
 
     this.setState(({ todoData }) => {
       const newArr = [...todoData, newItem];
@@ -116,12 +120,12 @@ export default class App extends React.Component {
     });
   };
 
-  changeTodoTime = (id, time) => {
+  changeTodoTime = (id, min, sec) => {
     this.setState(({ todoData }) => {
       const idx = todoData.findIndex((el) => el.id === id);
 
       const oldItem = todoData[idx];
-      const newItem = { ...oldItem, todoTime: time };
+      const newItem = { ...oldItem, minutes: min, seconds: sec };
 
       const newArr = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
       return {
