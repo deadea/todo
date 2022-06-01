@@ -1,70 +1,58 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import './timer.css';
 
-class Timer extends React.Component {
-  state = {
-    timerOn: false,
-    min: parseInt(this.props.minutes),
-    sec: parseInt(this.props.seconds),
-  };
-  componentDidMount() {
-    this.interval = null;
-  }
+function Timer({ minutes, seconds, changeTodoTime, id }) {
+  const [time, setTime] = useState(parseInt(minutes) * 60 + parseInt(seconds));
+  const [timerOn, setTimerOn] = useState(false);
 
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
+  useEffect(() => {
+    let interval = null;
 
-  timerTick = () => {
-    if (this.state.min === 0 && this.state.sec === 0) {
-      clearInterval(this.interval);
-      return;
+    if (timerOn) {
+      interval = setInterval(() => {
+        setTime((prevTime) => prevTime - 1);
+      }, 1000);
+    } else if (!timerOn) {
+      clearInterval(interval);
     }
-    if (this.state.sec !== 0) {
-      this.setState(({ sec }) => {
-        return {
-          sec: sec - 1,
-        };
-      });
-    } else {
-      this.setState(({ min }) => {
-        return {
-          sec: 59,
-          min: min - 1,
-        };
-      });
-    }
+
+    return () => clearInterval(interval);
+  }, [timerOn]);
+
+  const timerStart = () => {
+    setTimerOn(true);
   };
 
-  timerStart = () => {
-    if (!this.state.timerOn) {
-      this.setState({
-        timerOn: true,
-      });
-      this.interval = setInterval(() => this.timerTick(), 1000);
-    } else return;
+  const min = Math.floor(time / 60);
+  const sec = time - min * 60;
+  const minFormatted = min.toString().length === 1 ? `0${min}` : min;
+  const secFormatted = sec.toString().length === 1 ? `0${sec}` : sec;
+
+  const timerPause = () => {
+    setTimerOn(false);
+    changeTodoTime(id, minFormatted, secFormatted);
   };
 
-  timerPause = () => {
-    if (this.state.timerOn) {
-      this.setState({ timerOn: false });
-      clearInterval(this.interval);
-      this.props.changeTodoTime(this.props.id, this.state.min, this.state.sec);
-    } else return;
-  };
-
-  render() {
-    const { min, sec } = this.state;
-    const minFormatted = min.toString().length === 1 ? `0${min}` : min;
-    const secFormatted = sec.toString().length === 1 ? `0${sec}` : sec;
-    return (
-      <span className="description">
-        <button className="icon icon-play" onMouseDown={this.timerStart}></button>
-        <button className="icon icon-pause" onClick={this.timerPause}></button>
-        {minFormatted}:{secFormatted}
-      </span>
-    );
-  }
+  return (
+    <span className="description">
+      <button className="icon icon-play" onMouseDown={timerStart}></button>
+      <button className="icon icon-pause" onClick={timerPause}></button>
+      {minFormatted}:{secFormatted}
+    </span>
+  );
 }
 
 export default Timer;
+
+Timer.defaultProps = {
+  changeTodoTime: () => {},
+  minutes: '0',
+  seconds: '0',
+};
+
+Timer.propTypes = {
+  changeTodoTime: PropTypes.func,
+  minutes: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  seconds: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+};
